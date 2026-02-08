@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Co-op Rogue-like</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Connection Screen -->
+    <div id="connection-screen" class="screen active">
+        <div class="container">
+            <h1>Co-op Rogue-like</h1>
+            <p class="subtitle">4-Player Cooperative Adventure</p>
+
+            <div class="form-group">
+                <label for="server-address">Server Address</label>
+                <input type="text" id="server-address" placeholder="ws://192.168.1.100:8080" value="">
+            </div>
+
+            <button id="connect-btn" class="btn primary">Connect to Server</button>
+
+            <p id="connection-status" class="status"></p>
+        </div>
+    </div>
+
+    <!-- Lobby Screen -->
+    <div id="lobby-screen" class="screen">
+        <div class="container">
+            <h2>Game Lobby</h2>
+
+            <div class="lobby-info">
+                <div class="form-group">
+                    <label for="player-name">Your Name</label>
+                    <input type="text" id="player-name" placeholder="Enter your name" maxlength="16">
+                </div>
+
+                <div class="room-section">
+                    <div class="form-group">
+                        <label for="room-code">Room Code</label>
+                        <input type="text" id="room-code" placeholder="Enter room code" maxlength="6">
+                    </div>
+                    <div class="room-buttons">
+                        <button id="join-room-btn" class="btn secondary">Join Room</button>
+                        <button id="create-room-btn" class="btn secondary">Create Room</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="room-info" class="room-info hidden">
+                <h3>Room: <span id="current-room-code">----</span></h3>
+
+                <div class="players-list">
+                    <h4>Players</h4>
+                    <div id="players-container">
+                        <!-- Players will be added here dynamically -->
+                    </div>
+                </div>
+
+                <div class="ready-section">
+                    <button id="ready-btn" class="btn ready">Ready Up</button>
+                    <p id="ready-status">Waiting for players...</p>
+                </div>
+            </div>
+
+            <button id="disconnect-btn" class="btn danger">Disconnect</button>
+        </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="game-screen" class="screen">
+        <!-- HUD -->
+        <div id="hud">
+            <div class="hud-left">
+                <div class="room-indicator">
+                    <span id="current-room-num">Room 1</span>
+                    <span id="room-type">Combat</span>
+                </div>
+            </div>
+
+            <div class="hud-center">
+                <div id="team-health-bars">
+                    <!-- Player health bars added dynamically -->
+                </div>
+            </div>
+
+            <div class="hud-right">
+                <div id="player-stats">
+                    <div class="stat">
+                        <span class="stat-icon">HP</span>
+                        <span id="player-hp">100</span>/<span id="player-max-hp">100</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">ATK</span>
+                        <span id="player-atk">10</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">SPD</span>
+                        <span id="player-spd">1.0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Canvas -->
+        <canvas id="game-canvas"></canvas>
+
+        <!-- Mobile Controls (optional) -->
+        <div id="mobile-controls" class="hidden">
+            <div class="dpad">
+                <button class="dpad-btn up" data-dir="up">&#9650;</button>
+                <button class="dpad-btn left" data-dir="left">&#9664;</button>
+                <button class="dpad-btn right" data-dir="right">&#9654;</button>
+                <button class="dpad-btn down" data-dir="down">&#9660;</button>
+            </div>
+            <div class="action-buttons">
+                <button class="action-btn" id="attack-btn">Attack</button>
+                <button class="action-btn" id="dash-btn">Dash</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upgrade Screen -->
+    <div id="upgrade-screen" class="screen">
+        <div class="upgrade-container">
+            <h2>Choose Your Upgrade</h2>
+            <p class="upgrade-subtitle">Room Cleared! Select a reward.</p>
+
+            <div id="upgrade-options">
+                <!-- Upgrade cards added dynamically -->
+            </div>
+
+            <div id="team-choices" class="hidden">
+                <h4>Team Choices</h4>
+                <div id="team-choices-container">
+                    <!-- Team member choices shown here -->
+                </div>
+            </div>
+
+            <p id="upgrade-timer">Waiting for all players...</p>
+        </div>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div id="gameover-screen" class="screen">
+        <div class="container">
+            <h2 id="gameover-title">Game Over</h2>
+            <div id="gameover-stats">
+                <p>Rooms Cleared: <span id="rooms-cleared">0</span></p>
+                <p>Enemies Defeated: <span id="enemies-defeated">0</span></p>
+                <p>Time Survived: <span id="time-survived">0:00</span></p>
+            </div>
+            <button id="return-lobby-btn" class="btn primary">Return to Lobby</button>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
