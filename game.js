@@ -828,13 +828,22 @@ class GameClient {
 
         this.teamChoices.classList.add('hidden');
         this.upgradeTimer.textContent = 'Choose your upgrade...';
+        this.upgradeSelected = false;  // Reset for new upgrade selection
     }
 
     selectUpgrade(index, cardElement) {
+        // Prevent double-click
+        if (this.upgradeSelected) return;
+        this.upgradeSelected = true;
+
         // Remove previous selection
-        document.querySelectorAll('.upgrade-card').forEach(c => c.classList.remove('selected'));
+        document.querySelectorAll('.upgrade-card').forEach(c => {
+            c.classList.remove('selected');
+            c.classList.add('locked');
+        });
 
         // Mark this one as selected
+        cardElement.classList.remove('locked');
         cardElement.classList.add('selected');
 
         // Send choice to server
