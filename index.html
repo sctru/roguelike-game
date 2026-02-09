@@ -76,6 +76,7 @@
                     <span id="current-room-num">Room 1</span>
                     <span id="room-type">Combat</span>
                 </div>
+                <button id="quit-game-btn" class="btn-quit">Quit Game</button>
             </div>
 
             <div class="hud-center">
@@ -134,11 +135,22 @@
         </div>
     </div>
 
+    <!-- Room Cleared Screen -->
+    <div id="room-cleared-screen" class="screen">
+        <div class="container room-cleared-container">
+            <h2 id="room-cleared-title">Room Cleared!</h2>
+            <div id="room-cleared-stats">
+                <p>Room <span id="cleared-room-num">1</span> Complete</p>
+            </div>
+            <p id="cleared-countdown">Selecting upgrades in 3...</p>
+        </div>
+    </div>
+
     <!-- Upgrade Screen -->
     <div id="upgrade-screen" class="screen">
         <div class="upgrade-container">
             <h2>Choose Your Upgrade</h2>
-            <p class="upgrade-subtitle">Room Cleared! Select a reward.</p>
+            <p class="upgrade-subtitle">Select a reward for completing the room.</p>
 
             <div id="upgrade-options">
                 <!-- Upgrade cards added dynamically -->

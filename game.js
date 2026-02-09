@@ -51,6 +51,7 @@ class GameClient {
             connection: document.getElementById('connection-screen'),
             lobby: document.getElementById('lobby-screen'),
             game: document.getElementById('game-screen'),
+            'room-cleared': document.getElementById('room-cleared-screen'),
             upgrade: document.getElementById('upgrade-screen'),
             gameover: document.getElementById('gameover-screen')
         };
@@ -117,6 +118,9 @@ class GameClient {
 
         // Game over events
         this.returnLobbyBtn.addEventListener('click', () => this.returnToLobby());
+
+        // Quit game button
+        document.getElementById('quit-game-btn').addEventListener('click', () => this.quitGame());
 
         // Keyboard input
         window.addEventListener('keydown', (e) => this.onKeyDown(e));
@@ -811,8 +815,27 @@ class GameClient {
     onRoomCleared(upgrades) {
         this.state = GameState.UPGRADING;
         this.stopGameLoop();
-        this.showScreen('upgrade');
-        this.displayUpgrades(upgrades);
+        this.pendingUpgrades = upgrades;
+
+        // Show room cleared screen first
+        this.showScreen('room-cleared');
+        document.getElementById('cleared-room-num').textContent = this.roomNumber;
+
+        // Countdown to upgrade selection
+        let countdown = 3;
+        const countdownEl = document.getElementById('cleared-countdown');
+        countdownEl.textContent = `Selecting upgrades in ${countdown}...`;
+
+        const countdownInterval = setInterval(() => {
+            countdown--;
+            if (countdown > 0) {
+                countdownEl.textContent = `Selecting upgrades in ${countdown}...`;
+            } else {
+                clearInterval(countdownInterval);
+                this.showScreen('upgrade');
+                this.displayUpgrades(this.pendingUpgrades);
+            }
+        }, 1000);
     }
 
     displayUpgrades(upgrades) {
@@ -948,6 +971,14 @@ class GameClient {
 
         // Request updated player list
         this.send({ type: 'get_room_state' });
+    }
+
+    quitGame() {
+        if (confirm('Are you sure you want to quit the current game?')) {
+            this.stopGameLoop();
+            this.send({ type: 'quit_game' });
+            this.returnToLobby();
+        }
     }
 
     // Screen Management
