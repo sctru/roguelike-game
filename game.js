@@ -455,7 +455,7 @@ class GameClient {
         // Update game state from server
         if (state.players) this.localPlayers = state.players;
         if (state.enemies) this.enemies = state.enemies;
-        if (state.projectiles) this.projectiles = state.projectiles;
+        this.projectiles = state.projectiles || [];
 
         this.updateHUD();
         this.updateTeamHealthBars();
@@ -692,9 +692,27 @@ class GameClient {
 
     drawProjectiles(ctx) {
         this.projectiles?.forEach(proj => {
-            ctx.fillStyle = proj.color || '#ffff00';
+            const x = proj.x;
+            const y = proj.y;
+            const radius = proj.radius || 8;
+            const color = proj.color || '#ffff00';
+
+            // Outer glow
             ctx.beginPath();
-            ctx.arc(proj.x, proj.y, proj.radius || 5, 0, Math.PI * 2);
+            ctx.arc(x, y, radius + 4, 0, Math.PI * 2);
+            ctx.fillStyle = color + '44';  // Semi-transparent glow
+            ctx.fill();
+
+            // Main projectile
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.fillStyle = color;
+            ctx.fill();
+
+            // Inner bright core
+            ctx.beginPath();
+            ctx.arc(x, y, radius * 0.5, 0, Math.PI * 2);
+            ctx.fillStyle = '#ffffff';
             ctx.fill();
         });
     }
@@ -902,6 +920,23 @@ class GameClient {
         const minutes = Math.floor(stats.timeSurvived / 60);
         const seconds = stats.timeSurvived % 60;
         this.timeSurvived.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+        // Countdown and auto-return to lobby
+        const countdownEl = document.getElementById('lobby-countdown');
+        let countdown = 5;
+        countdownEl.textContent = `Returning to lobby in ${countdown}...`;
+
+        const countdownInterval = setInterval(() => {
+            countdown--;
+            if (countdown > 0) {
+                countdownEl.textContent = `Returning to lobby in ${countdown}...`;
+            } else {
+                clearInterval(countdownInterval);
+                if (this.state === GameState.GAME_OVER) {
+                    this.returnToLobby();
+                }
+            }
+        }, 1000);
     }
 
     returnToLobby() {
