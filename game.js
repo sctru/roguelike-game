@@ -129,6 +129,9 @@ class GameClient {
         // Touch/mobile input
         this.setupMobileControls();
 
+        // Controls panel toggle
+        this.setupControlsPanel();
+
         // Window resize
         window.addEventListener('resize', () => this.resizeCanvas());
     }
@@ -764,6 +767,24 @@ class GameClient {
             document.getElementById('dash-btn').addEventListener('touchend', (e) => {
                 e.preventDefault();
                 this.keys['ShiftLeft'] = false;
+            });
+        }
+    }
+
+    setupControlsPanel() {
+        const toggle = document.getElementById('controls-toggle');
+        const content = document.getElementById('controls-content');
+
+        if (toggle && content) {
+            toggle.addEventListener('click', () => {
+                content.classList.toggle('visible');
+            });
+
+            // Close when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('#controls-panel')) {
+                    content.classList.remove('visible');
+                }
             });
         }
     }

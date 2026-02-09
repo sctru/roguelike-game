@@ -428,6 +428,83 @@ input[type="text"]::placeholder {
     min-width: 30px;
 }
 
+/* Controls Panel */
+#controls-panel {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 100;
+}
+
+.controls-toggle {
+    width: 36px;
+    height: 36px;
+    background: var(--bg-medium);
+    border: 2px solid var(--border-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-left: auto;
+}
+
+.controls-toggle:hover {
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+}
+
+.controls-content {
+    display: none;
+    background: var(--bg-medium);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 10px;
+    min-width: 160px;
+}
+
+.controls-content.visible {
+    display: block;
+}
+
+.controls-content h4 {
+    color: var(--accent-primary);
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.control-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.control-item:last-child {
+    margin-bottom: 0;
+}
+
+.control-item .key {
+    background: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-family: monospace;
+    font-size: 0.8rem;
+    color: var(--text-primary);
+    min-width: 50px;
+    text-align: center;
+}
+
 /* Game Canvas */
 #game-canvas {
     flex: 1;
