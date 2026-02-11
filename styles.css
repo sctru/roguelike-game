@@ -716,6 +716,22 @@ input[type="text"]::placeholder {
     line-height: 1.4;
 }
 
+.upgrade-bonus {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border-color);
+}
+
+.upgrade-bonus .bonus-value {
+    font-weight: bold;
+}
+
+.rarity-rare .upgrade-bonus .bonus-value { color: #3b82f6; }
+.rarity-epic .upgrade-bonus .bonus-value { color: #a855f7; }
+.rarity-legendary .upgrade-bonus .bonus-value { color: #f59e0b; }
+
 #team-choices {
     margin-top: 32px;
     padding-top: 24px;

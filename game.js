@@ -863,11 +863,19 @@ class GameClient {
             const card = document.createElement('div');
             card.className = `upgrade-card rarity-${upgrade.rarity || 'common'}`;
 
+            // Build bonus display for non-common rarities
+            let bonusHtml = '';
+            if (upgrade.rarity !== 'common' && upgrade.bonusValue !== undefined) {
+                const bonusDisplay = this.formatUpgradeValue(upgrade.stat, upgrade.bonusValue);
+                bonusHtml = `<div class="upgrade-bonus">(Base: ${this.formatUpgradeValue(upgrade.stat, upgrade.baseValue)} + <span class="bonus-value">${bonusDisplay}</span> bonus)</div>`;
+            }
+
             card.innerHTML = `
                 <div class="upgrade-icon">${upgradeIcons[upgrade.icon] || '&#9733;'}</div>
                 <div class="upgrade-name">${upgrade.name}</div>
                 <div class="upgrade-rarity">${upgrade.rarity || 'Common'}</div>
-                <div class="upgrade-description">${upgrade.description}</div>
+                <div class="upgrade-description">${this.getUpgradeDescription(upgrade)}</div>
+                ${bonusHtml}
             `;
 
             card.addEventListener('click', () => this.selectUpgrade(index, card));
@@ -877,6 +885,44 @@ class GameClient {
         this.teamChoices.classList.add('hidden');
         this.upgradeTimer.textContent = 'Choose your upgrade...';
         this.upgradeSelected = false;  // Reset for new upgrade selection
+    }
+
+    formatUpgradeValue(stat, value) {
+        // Format value based on stat type
+        if (['critChance', 'lifesteal', 'critMultiplier'].includes(stat)) {
+            return `${Math.round(value * 100)}%`;
+        } else if (stat === 'attackSpeed') {
+            return `${Math.round(value * 100)}%`;
+        } else if (stat === 'dashCooldown') {
+            return `${value.toFixed(1)}s`;
+        }
+        return Math.floor(value).toString();
+    }
+
+    getUpgradeDescription(upgrade) {
+        // Generate description with actual final value
+        if (upgrade.finalValue === undefined) {
+            return upgrade.description;
+        }
+
+        const finalDisplay = this.formatUpgradeValue(upgrade.stat, upgrade.finalValue);
+
+        // Map stats to description formats
+        const descriptions = {
+            maxHp: `Increase maximum health by ${finalDisplay}`,
+            attack: `Increase attack damage by ${finalDisplay}`,
+            speed: `Increase movement speed by ${finalDisplay}`,
+            defense: `Reduce incoming damage by ${finalDisplay}`,
+            critChance: `Increase critical hit chance by ${finalDisplay}`,
+            critMultiplier: `Increase critical hit damage by ${finalDisplay}`,
+            lifesteal: `Heal for ${finalDisplay} of damage dealt`,
+            attackSpeed: `Attack ${finalDisplay} faster`,
+            projectileCount: `Fire ${finalDisplay} additional projectile${upgrade.finalValue > 1 ? 's' : ''}`,
+            dashCooldown: `Reduce dash cooldown by ${finalDisplay}`,
+            heal: `Restore ${finalDisplay} health`
+        };
+
+        return descriptions[upgrade.stat] || upgrade.description;
     }
 
     selectUpgrade(index, cardElement) {
