@@ -817,6 +817,12 @@ class GameClient {
         this.stopGameLoop();
         this.pendingUpgrades = upgrades;
 
+        // Clear any existing countdown
+        if (this.roomClearedCountdown) {
+            clearInterval(this.roomClearedCountdown);
+            this.roomClearedCountdown = null;
+        }
+
         // Show room cleared screen first
         this.showScreen('room-cleared');
         document.getElementById('cleared-room-num').textContent = this.roomNumber;
@@ -826,12 +832,13 @@ class GameClient {
         const countdownEl = document.getElementById('cleared-countdown');
         countdownEl.textContent = `Selecting upgrades in ${countdown}...`;
 
-        const countdownInterval = setInterval(() => {
+        this.roomClearedCountdown = setInterval(() => {
             countdown--;
             if (countdown > 0) {
                 countdownEl.textContent = `Selecting upgrades in ${countdown}...`;
             } else {
-                clearInterval(countdownInterval);
+                clearInterval(this.roomClearedCountdown);
+                this.roomClearedCountdown = null;
                 this.showScreen('upgrade');
                 this.displayUpgrades(this.pendingUpgrades);
             }
@@ -934,6 +941,11 @@ class GameClient {
         this.stopGameLoop();
         this.showScreen('gameover');
 
+        // Clear any existing countdown
+        if (this.gameOverCountdown) {
+            clearInterval(this.gameOverCountdown);
+        }
+
         this.gameoverTitle.textContent = victory ? 'Victory!' : 'Game Over';
         this.gameoverTitle.style.color = victory ? '#10b981' : '#ef4444';
 
@@ -949,12 +961,13 @@ class GameClient {
         let countdown = 5;
         countdownEl.textContent = `Returning to lobby in ${countdown}...`;
 
-        const countdownInterval = setInterval(() => {
+        this.gameOverCountdown = setInterval(() => {
             countdown--;
             if (countdown > 0) {
                 countdownEl.textContent = `Returning to lobby in ${countdown}...`;
             } else {
-                clearInterval(countdownInterval);
+                clearInterval(this.gameOverCountdown);
+                this.gameOverCountdown = null;
                 if (this.state === GameState.GAME_OVER) {
                     this.returnToLobby();
                 }
@@ -963,6 +976,16 @@ class GameClient {
     }
 
     returnToLobby() {
+        // Clear any active countdowns
+        if (this.gameOverCountdown) {
+            clearInterval(this.gameOverCountdown);
+            this.gameOverCountdown = null;
+        }
+        if (this.roomClearedCountdown) {
+            clearInterval(this.roomClearedCountdown);
+            this.roomClearedCountdown = null;
+        }
+
         this.state = GameState.IN_ROOM;
         this.isReady = false;
         this.readyBtn.classList.remove('active');
